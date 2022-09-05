@@ -45,3 +45,4 @@ func (s *jwtService) GenerateToken(userID int) (string, error) {
 
 	return jwtSign, nil
 }
+// func test()
