@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"go_crowdfund/auth"
+	"go_crowdfund/campaign"
 	"go_crowdfund/handler"
 	"go_crowdfund/helper"
 	"go_crowdfund/user"
@@ -24,9 +26,15 @@ func main() {
 	}
 
 	userRepository := user.NewRepository(db)
+	campaignRepository := campaign.NewRepository(db)
 	userService := user.NewService(userRepository)
 	authService := auth.NewService()
 	userHandler := handler.NewUserHandler(userService, authService)
+	campaignService := campaign.NewService(campaignRepository)
+
+	campaign, err := campaignService.FindCampaigns(1)
+
+	fmt.Println(len(campaign))
 
 	router := gin.Default()
 	api := router.Group("/api/v1")
