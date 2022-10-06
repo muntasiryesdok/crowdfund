@@ -1,6 +1,9 @@
 package campaign
 
-import "time"
+import (
+	"go_crowdfund/user"
+	"time"
+)
 
 type Campaign struct {
 	ID               int
@@ -15,7 +18,8 @@ type Campaign struct {
 	Slug             string
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
-	CampaignImages    []CampaignImages
+	CampaignImages   []CampaignImages
+	User             user.User
 }
 
 type CampaignImages struct {
@@ -24,5 +28,5 @@ type CampaignImages struct {
 	FileName   string
 	IsPrimary  int
 	CreatedAt  time.Time
-	UpatedAt   time.Time
+	UpdatedAt  time.Time
 }

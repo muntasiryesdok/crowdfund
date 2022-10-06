@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"go_crowdfund/auth"
 	"go_crowdfund/campaign"
 	"go_crowdfund/handler"
@@ -29,20 +28,25 @@ func main() {
 	campaignRepository := campaign.NewRepository(db)
 	userService := user.NewService(userRepository)
 	authService := auth.NewService()
+
 	userHandler := handler.NewUserHandler(userService, authService)
 	campaignService := campaign.NewService(campaignRepository)
-
-	campaign, err := campaignService.FindCampaigns(1)
-
-	fmt.Println(len(campaign))
+	campaignHandle := handler.NewCampaignHandler(campaignService)
 
 	router := gin.Default()
+	router.Static("/images", "./images")
 	api := router.Group("/api/v1")
 
 	api.POST("/users", userHandler.RegisterUser)
 	api.POST("/sessions", userHandler.Login)
 	api.POST("/email_checkers", userHandler.CheckEmailAvailability)
 	api.POST("/avatars", authMiddleware(authService, userService), userHandler.UploadAvatar)
+	api.POST("/campaign", authMiddleware(authService, userService), campaignHandle.CreateCampaign)
+	api.PUT("/campaign/:id", authMiddleware(authService, userService), campaignHandle.UpdateCampaign)
+	api.POST("/campaign-image", authMiddleware(authService, userService), campaignHandle.UploadImage)
+
+	api.GET("/campaigns", campaignHandle.GetCampaigns)
+	api.GET("/campaigns/:id", campaignHandle.GetCampaign)
 
 	router.Run()
 }
